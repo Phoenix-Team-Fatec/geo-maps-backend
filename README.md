@@ -16,8 +16,8 @@
     ├── schemas/ 
     ├── services/ 
     ├── utils/ 
+    ├── main.py
 ├── requirements.txt 
-├── main.py
 ```
 
 
@@ -51,16 +51,10 @@
 
 
 - **[PyMongo](https://pymongo.readthedocs.io/)**  
-  Driver oficial do MongoDB para Python.  
-  - Útil para operações síncronas.  
+  Driver oficial do MongoDB para Python.    
   - Mais próximo da API nativa do MongoDB.  
+  - Utilização do AsyncMongoClient, para operações assíncronas
   
-
-- **[Motor](https://motor.readthedocs.io/)**  
-  Driver assíncrono do MongoDB para Python.  
-  - Baseado em `asyncio`.  
-  - Integração perfeita com o FastAPI, permitindo operações de I/O sem bloqueio.  
-
 
 ---
 
