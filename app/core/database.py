@@ -14,7 +14,21 @@ client = AsyncMongoClient(MONGO_URL)
 db = client[DB_NAME]
 
 collection = db['area_imovel_projeto']
+users_collection = db["users"]
 
+async def ensure_indexes():
+    await users_collection.create_index(
+        "email",
+        name="uniq_email",
+        unique=True,
+        partialFilterExpression={"email": {"$exists": True, "$type": "string"}}
+    )
+    await users_collection.create_index(
+        "cpf",
+        name="uniq_cpf",
+        unique=True,
+        partialFilterExpression={"cpf": {"$exists": True, "$type": "string"}}
+    )
 
 if __name__ == "__main__":
     print("Conexão com o Mongo feita com sucesso")
