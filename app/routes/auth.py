@@ -107,6 +107,7 @@ async def me(token: str = Depends(get_bearer_token)):
             cpf=user.get("cpf"),
             nome=user.get("nome"),
             sobrenome=user.get("sobrenome"),
+            data_nascimento=user.get("data_nascimento"),
             email=user["email"],
             image=user.get("image"),
         )

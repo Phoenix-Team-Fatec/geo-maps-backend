@@ -1,4 +1,5 @@
-from pydantic import BaseModel, EmailStr, HttpUrl
+from pydantic import BaseModel, EmailStr, AnyUrl
+from datetime import date
 from typing import Optional
 
 #Schema base do usuário
@@ -7,7 +8,8 @@ class UserBase(BaseModel):
     nome: Optional[str] = None
     sobrenome: Optional[str] = None
     email: Optional[EmailStr] = None
-    image: Optional[HttpUrl] = None
+    data_nascimento: Optional[date] = None
+    image: Optional[AnyUrl] = None
 
 #Schmea de criação do usuário
 class UserCreate(UserBase):
@@ -16,7 +18,8 @@ class UserCreate(UserBase):
     sobrenome: str
     email: EmailStr
     password: str
-    image: Optional[HttpUrl] = None
+    data_nascimento: date
+    image: Optional[AnyUrl] = None
 
 #Schema de leitura do usuário
 class UserRead(BaseModel):
@@ -25,13 +28,15 @@ class UserRead(BaseModel):
     nome: str
     sobrenome: str
     email: EmailStr
-    image: Optional[HttpUrl] = None
+    data_nascimento: date
+    image: Optional[AnyUrl] = None
 
 #Schema do token JWT
 class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
     expires_in: int
+    refresh_token: Optional[str] = None
 
 #Schema das credenciais de login
 class Credentials(BaseModel):
