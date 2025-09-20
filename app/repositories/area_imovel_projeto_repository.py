@@ -1,6 +1,6 @@
 from core.database import collection
 from schemas.area_imovel_projeto_schema import Feature
-from schemas.plus_code_schema import CreatePlusCode
+from schemas.plus_code_schema import CreatePlusCode, UpdatePlusCode
 from typing import List
 
 
@@ -38,6 +38,25 @@ async def add_properties_plus_code(cod_imovel: str, pluscode: CreatePlusCode) ->
 
         # Add the pluscode into the document
         result = await collection.update_one(query_filter, update_operation)
+
+
+async def update_properties_plus_code(cod_imovel: str, pluscode: UpdatePlusCode) -> None:
+
+        # Find the property by cod_imovel, that will be add a pluscode
+        query_filter = {'properties.cod_imovel': cod_imovel}
+
+        # Checking null values
+        user_pluscode = {key: value for key, value in pluscode.model_dump().items() if value is not None}
+
+        # Mounting the query
+        update_operation = {'$set': {f'pluscode.{key}': value for key, value in user_pluscode.items()}}
+
+        # Making the update 
+        result = await collection.update_one(query_filter, update_operation)
+        
+        return result
+
+
     
 
 async def get_property_polygon(cod_imovel:str) -> List:
