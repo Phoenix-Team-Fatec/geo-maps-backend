@@ -20,6 +20,7 @@ async def add_properties_plus_code_service(cod_imovel:str, create_data: CreatePl
         user_pluscode = generate_plus_code(lat=lat, long=long)
 
         create_data.pluscode_cod = user_pluscode
+        create_data.cod_imovel = cod_imovel
         
         return await add_properties_plus_code(cod_imovel, create_data)
     

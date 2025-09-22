@@ -3,16 +3,10 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
 from io import BytesIO
 import qrcode
-from datetime import datetime
-import hashlib
+from schemas.area_imovel_projeto_schema import PlusCode
 
-# def gerar_hash(imovel_id: str, plus_code: str, timestamp: str) -> str:
-#     raw = f"{imovel_id}|{plus_code}|{timestamp}"
-#     return hashlib.sha256(raw.encode("utf-8")).hexdigest()
 
-def gerar_pdf_bytes(nome: str, imovel_id: str, plus_code: str, coordenadas: str):
-    ts = datetime.utcnow().isoformat()
-    hash_id = gerar_hash(imovel_id, plus_code, ts)
+def gerar_pdf_bytes(info_pluscode: PlusCode):
 
     buffer = BytesIO()
     c = canvas.Canvas(buffer, pagesize=A4)
@@ -24,15 +18,15 @@ def gerar_pdf_bytes(nome: str, imovel_id: str, plus_code: str, coordenadas: str)
 
     # Texto (você pode ajustar posições/tamanhos)
     c.setFont("Helvetica", 12)
-    c.drawString(72, height - 120, f"Proprietário: {nome}")
-    c.drawString(72, height - 140, f"Imóvel (CAR/ID): {imovel_id}")
-    c.drawString(72, height - 160, f"Plus Code: {plus_code}")
-    c.drawString(72, height - 180, f"Coordenadas: {coordenadas}")
-    c.drawString(72, height - 200, f"Data/Hora (UTC): {ts}")
-    c.drawString(72, height - 220, f"Hash de Validação: {hash_id}")
+    c.drawString(72, height - 120, f"Proprietário: {info_pluscode.owner_name}")
+    c.drawString(72, height - 140, f"Imóvel (CAR/ID): {info_pluscode.cod_imovel}")
+    c.drawString(72, height - 160, f"Plus Code: {info_pluscode.pluscode_cod}")
+    c.drawString(72, height - 180, f"Coordenadas: {info_pluscode.cordinates}")
+    c.drawString(72, height - 200, f"Data/Hora (UTC): {info_pluscode.validation_date}")
+    c.drawString(72, height - 220, f"Hash de Validação: {info_pluscode.id}")
 
     # QR Code com infos (imovel|plus|hash)
-    qr_payload = f"{imovel_id}|{plus_code}|{hash_id}"
+    qr_payload = f"{info_pluscode.cod_imovel}|{info_pluscode.pluscode_cod}|{info_pluscode.id}"
     qr = qrcode.make(qr_payload)
     qr_buffer = BytesIO()
     qr.save(qr_buffer, format="PNG")
@@ -46,4 +40,4 @@ def gerar_pdf_bytes(nome: str, imovel_id: str, plus_code: str, coordenadas: str)
     c.save()
 
     buffer.seek(0)
-    return buffer.read(), hash_id
+    return buffer.read(), info_pluscode.id

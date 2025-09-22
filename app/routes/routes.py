@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException,BackgroundTasks
+from fastapi import APIRouter, HTTPException, BackgroundTasks
 from starlette.concurrency import run_in_threadpool
 from schemas.area_imovel_projeto_schema import Feature
 from schemas.coordinate_schema import Coordinate
@@ -49,21 +49,21 @@ async def update_pluscode(cod_imovel: str, request:UpdatePlusCode ):
         
 
 @area_imovel_router.post('/properties/pluscode/pdf')
-async def create_certificate(req: CertificateRequest, background_tasks: BackgroundTasks):
+async def create_certificate(req: PlusCode, email:str , background_tasks: BackgroundTasks):
     try:
-        pdf_bytes, hash_id = await run_in_threadpool(
-            gerar_pdf_bytes, req.nome, req.imovel_id, req.plus_code, req.coordenadas
+        pdf_bytes, req.id = await run_in_threadpool(
+            gerar_pdf_bytes, req
         )
 
-        filename = f"certificado_{req.imovel_id}.pdf"
+        filename = f"certificado_{req.cod_imovel}.pdf"
         subject = "Seu Certificado de Endereço Digital"
         body = (
-            f"Olá {req.nome},\n\nSegue em anexo o certificado do imóvel {req.imovel_id}."
-            f"\nHash de validação: {hash_id}\n\nAtenciosamente."
+            f"Olá {req.owner_name},\n\nSegue em anexo o certificado do imóvel {req.cod_imovel}."
+            f"\nHash de validação: {req.id}\n\nAtenciosamente."
         )
 
-        background_tasks.add_task(send_email_with_attachment, req.email, subject, body, pdf_bytes, filename)
+        background_tasks.add_task(send_email_with_attachment, email, subject, body, pdf_bytes, filename)
 
-        return {"status": "ok", "hash": hash_id, "filename": filename}
+        return {"status": "ok", "hash": req.id, "filename": filename}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

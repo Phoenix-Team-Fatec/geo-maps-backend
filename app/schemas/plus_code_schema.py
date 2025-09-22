@@ -9,6 +9,7 @@ class PlusCode(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid4())[:8])
     owner_name: str
     pluscode_cod: str
+    cod_imovel: str
     cordinates: Coordinate
     validation_date: datetime = Field(default_factory=datetime.now)
 
@@ -19,6 +20,7 @@ class PlusCode(BaseModel):
 class CreatePlusCode(PlusCode):
     owner_name: str
     pluscode_cod: str
+    cod_imovel: str
     cordinates: Coordinate
 
 
