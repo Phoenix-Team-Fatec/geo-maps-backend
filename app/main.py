@@ -1,19 +1,24 @@
 from fastapi import FastAPI
-from routes.area_imovel_projeto import area_imovel_router
-from routes.auth import auth
-from core.database import ensure_indexes
+from app.routes.area_imovel_projeto import area_imovel_router
+from app.routes.auth import auth
+from app.core.database import ensure_indexes
+from fastapi.middleware.cors import CORSMiddleware
 
-#Declara uma constante para o FastAPI
 app = FastAPI()
 
-#Cria índices no banco de dados ao iniciar a aplicação (evita usuários duplicados)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Cria índices no banco ao iniciar a aplicação
 async def lifespan(app: FastAPI):
     await ensure_indexes()
     yield
 
-#Inclui as rotas no backend
+# Inclui as rotas
 app.include_router(area_imovel_router)
 app.include_router(auth)
-
-
-

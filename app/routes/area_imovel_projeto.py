@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
-from schemas.area_imovel_projeto_schema import Properties
+from app.schemas.area_imovel_projeto_schema import Properties
 from typing import List
-from services.area_imovel_projeto_service import list_properties_service
+from app.services.area_imovel_projeto_service import list_properties_service
 
 area_imovel_router = APIRouter(prefix='/area_imovel', tags=['Area_Imovel'])
 
