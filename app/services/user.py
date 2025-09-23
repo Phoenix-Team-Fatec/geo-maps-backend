@@ -1,8 +1,8 @@
 from fastapi.encoders import jsonable_encoder
 from pymongo.errors import DuplicateKeyError
-from app.repositories.user import create_user, find_user_by_email
-from app.schemas.user import UserCreate
-from app.core.security import get_password_hash, verify_password
+from repositories.user import create_user, find_user_by_email
+from schemas.user import UserCreate
+from core.security import get_password_hash, verify_password
 
 #Erro caso os usuários já existam
 class UserAlreadyExistsError(Exception):
