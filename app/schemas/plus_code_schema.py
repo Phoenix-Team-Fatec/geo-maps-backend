@@ -6,6 +6,7 @@ from typing import Optional
 
 class PlusCode(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid4())[:8])
+    surname: str
     owner_email: EmailStr
     pluscode_cod: str
     cod_imovel: str
@@ -17,6 +18,7 @@ class PlusCode(BaseModel):
       
 
 class CreatePlusCode(PlusCode):
+    surname: str
     owner_email: EmailStr
     pluscode_cod: str
     cod_imovel: str
@@ -25,6 +27,7 @@ class CreatePlusCode(PlusCode):
 
 
 class UpdatePlusCode(BaseModel): 
+    surname: Optional[str] = None
     owner_email: Optional[EmailStr] = None
     pluscode_cod: Optional[str] = None
     cordinates: Optional[Coordinate] = None
