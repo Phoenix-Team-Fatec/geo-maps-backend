@@ -6,8 +6,21 @@ from io import BytesIO
 import qrcode
 from schemas.area_imovel_projeto_schema import PlusCode
 
+def gerar_pdf_bytes(info_pluscode: PlusCode, user_info: dict):
+    """
+    Colocar informações do usuário no PDF,
+    Informações:
+    
+    info_pluscode:
+            - email
+    
+    user_info:
+            - cpf
+            - nome 
+            - sobrenome 
+    """
 
-def gerar_pdf_bytes(info_pluscode: PlusCode):
+
 
     buffer = BytesIO()
     c = canvas.Canvas(buffer, pagesize=A4)
@@ -20,13 +33,10 @@ def gerar_pdf_bytes(info_pluscode: PlusCode):
 
     # Texto (você pode ajustar posições/tamanhos)
     c.setFont("Helvetica", 12)
-    """
-    Certificado de Endereço Digital
-    Este certificado atesta a existência e a exatidão do endereço digital associado ao imóvel a seguir.
-    """
+   
     c.drawString(72, height - 220, f"Certificado de Endereço Digital")
     c.drawString(72, height - 250, f"Este certificado atesta a existência e a exatidão do endereço digital associado ao imóvel a seguir.")
-    c.drawString(72, height - 320, f"Proprietário: {info_pluscode.owner_name}")
+    c.drawString(72, height - 320, f"Proprietário: {info_pluscode.owner_email}")
     c.drawString(72, height - 340, f"Imóvel (CAR/ID): {info_pluscode.cod_imovel}")
     c.drawString(72, height - 360, f"Plus Code: {info_pluscode.pluscode_cod}")
     c.drawString(72, height - 380, f"Coordenadas: {info_pluscode.cordinates}")
