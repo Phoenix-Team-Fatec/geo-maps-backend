@@ -72,7 +72,7 @@ async def refresh(request: Request, response: Response):
             path="/auth",
         )
 
-        return {"access_token": new_access, "expires_in": 15 * 60, "token_type": "bearer"}
+        return {"access_token": new_access, "refresh_token": new_refresh, "expires_in": 15 * 60, "token_type": "bearer"}
     except ValueError as e:
         raise HTTPException(status_code=401, detail=str(e))
 
