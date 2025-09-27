@@ -32,7 +32,7 @@ def gerar_pdf_bytes(info_pluscode: PlusCode, user_info: dict):
     margin = 40
 
     # Logo 
-    logo_path = os.path.join("assets", "geomaps_logo.png")
+    logo_path = os.path.join("assets", "geomaps_logo.jpg")
     if os.path.exists(logo_path):
         c.drawImage(logo_path, width/2 - 60, height - 140, width=120, height=60, preserveAspectRatio=True, mask='auto')
 
@@ -56,11 +56,31 @@ def gerar_pdf_bytes(info_pluscode: PlusCode, user_info: dict):
     c.drawString(80, y, "imóvel a seguir.")
     y -= 30
 
+        # Nome do proprietário e infos usuários
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(80, y, "Nome do proprietário: ")
+    # Nome
     c.setFont("Helvetica-Bold", 12)
     c.drawString(80, y, "Nome do proprietário: ")
     c.setFont("Helvetica", 12)
-    c.drawString(250, y, f"{user_info.get('nome', '')} {user_info.get('sobrenome', '')} ({info_pluscode.owner_email})")
+    c.drawString(
+        250, y, f"{user_info.get('nome', '')} {user_info.get('sobrenome', '')}"
+    )
     y -= 20
+
+    # CPF
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(80, y, "CPF do proprietário: ")
+    c.setFont("Helvetica", 12)
+    c.drawString(250, y, f"{user_info.get('cpf', '')}")
+    y -= 20
+
+    # Email
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(80, y, "E-mail do proprietário: ")
+    c.setFont("Helvetica", 12)
+    c.drawString(250, y, f"{info_pluscode.owner_email}")
+    y -= 30
 
     c.setFont("Helvetica-Bold", 12)
     c.drawString(80, y, "Identificação do imóvel: ")
