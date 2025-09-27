@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, AnyUrl
+from pydantic import BaseModel, EmailStr, AnyUrl, constr
 from datetime import date
 from typing import Optional
 
@@ -42,3 +42,15 @@ class Token(BaseModel):
 class Credentials(BaseModel):
     email: EmailStr
     password: str
+
+class ForgotPasswordIn(BaseModel):
+    email: EmailStr
+
+class VerifyResetCodeIn(BaseModel):
+    email: EmailStr
+    code: constr(min_length=6, max_length=6) 
+
+class ResetPasswordIn(BaseModel):
+    email: EmailStr
+    code: constr(min_length=6, max_length=6)
+    new_password: str

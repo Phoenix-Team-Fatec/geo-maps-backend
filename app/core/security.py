@@ -1,9 +1,11 @@
 from datetime import datetime, timedelta, timezone
 from typing import Optional, Any, Dict, Tuple
 from passlib.context import CryptContext
+from passlib.hash import bcrypt
 from jose import jwt, JWTError
 from uuid import uuid4
 import os
+import secrets
 from dotenv import load_dotenv
 
 #Carrega as variáveis de ambiente do .env
@@ -14,8 +16,23 @@ SECRET_KEY = os.environ.get('SECRET_KEY',)
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 15
 REFRESH_TOKEN_EXPIRE_DAYS = 365
+RESET_CODE_TTL_MINUTES = 15
+MAX_RESET_ATTEMPTS = 5
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def generate_code() -> str:
+    # 6 dígitos, zero-padded
+    return str(secrets.randbelow(1_000_000)).zfill(6)
+
+def hash_code(code: str) -> str:
+    return bcrypt.hash(code)
+
+def verify_code(code: str, hashed: str) -> bool:
+    return bcrypt.verify(code, hashed)
+
+def expires_at_from_now() -> datetime:
+    return datetime.utcnow() + timedelta(minutes=RESET_CODE_TTL_MINUTES)
 
 #Funções para hash e verificação de senhas
 def get_password_hash(password:str) -> str:
