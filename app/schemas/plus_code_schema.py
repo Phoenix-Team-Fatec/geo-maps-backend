@@ -1,13 +1,13 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, EmailStr
 from .coordinate_schema import Coordinate
 from datetime import datetime
 from uuid import uuid4
 from typing import Optional
 
-
 class PlusCode(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid4())[:8])
-    owner_name: str
+    surname: str
+    owner_email: EmailStr
     pluscode_cod: str
     cod_imovel: str
     cordinates: Coordinate
@@ -18,7 +18,8 @@ class PlusCode(BaseModel):
       
 
 class CreatePlusCode(PlusCode):
-    owner_name: str
+    surname: str
+    owner_email: EmailStr
     pluscode_cod: str
     cod_imovel: str
     cordinates: Coordinate
@@ -26,17 +27,9 @@ class CreatePlusCode(PlusCode):
 
 
 class UpdatePlusCode(BaseModel): 
-    owner_name: Optional[str] = None
+    surname: Optional[str] = None
+    owner_email: Optional[EmailStr] = None
     pluscode_cod: Optional[str] = None
     cordinates: Optional[Coordinate] = None
-
-
-class ResquestPlusCode(BaseModel):
-    coordinates: Coordinate
-    owner_name: str
-
-
-
-
 
 

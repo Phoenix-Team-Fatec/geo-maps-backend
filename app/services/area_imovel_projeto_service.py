@@ -1,7 +1,6 @@
 from repositories.area_imovel_projeto_repository import list_properties
 from repositories.area_imovel_projeto_repository import list_properties, add_properties_plus_code, get_property_polygon, update_properties_plus_code
 from schemas.plus_code_schema import CreatePlusCode, UpdatePlusCode
-from schemas.coordinate_schema import Coordinate
 from utils.pluscode_utils import generate_plus_code, validate_coordinate
 
 async def list_properties_service(cod_cpf: str):
