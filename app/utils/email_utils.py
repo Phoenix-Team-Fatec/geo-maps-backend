@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from fastapi import BackgroundTasks
 
 log = logging.getLogger("mailer")
+
 load_dotenv()  # carrega .env se existir
 SMTP_HOST = os.getenv("SMTP_HOST")
 SMTP_PORT = int(os.getenv("SMTP_PORT", 465))
@@ -26,7 +27,6 @@ def send_email_with_attachment(to_email: str, subject: str, body: str, attachmen
     with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT, context=context) as server:
         server.login(SMTP_USER, SMTP_PASS)
         server.send_message(msg)
-#seguro (SMTP SSL 465). Se usar 587, trocar para starttls.
 
 
 def send_reset_email(to_email: str, code: str, background: BackgroundTasks | None = None) -> None:

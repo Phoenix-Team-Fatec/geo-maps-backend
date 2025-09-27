@@ -1,10 +1,10 @@
 from fastapi import APIRouter, HTTPException, status, Depends, Response, Request
 from jose import JWTError, jwt
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from app.schemas.user import UserCreate, UserRead, Token, Credentials
-from app.services.user import create_user_service, authenticate_user, UserAlreadyExistsError, AuthError
-from app.core.security import create_access_token, create_refresh_token, decode_token, refresh_session, revoke_jti, ALGORITHM, SECRET_KEY
-from app.repositories.user import find_user_by_email
+from schemas.user import UserCreate, UserRead, Token, Credentials
+from services.user import create_user_service, authenticate_user, UserAlreadyExistsError, AuthError
+from core.security import create_access_token, create_refresh_token, decode_token, refresh_session, revoke_jti, ALGORITHM, SECRET_KEY
+from repositories.user import find_user_by_email
 
 #Declara o prefixo das rotas de autenticação, e a forma de receber o token
 auth = APIRouter(prefix="/auth", tags=["Auth"])
