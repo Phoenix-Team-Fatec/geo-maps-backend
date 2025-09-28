@@ -2,41 +2,122 @@ from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
 from reportlab.lib.units import inch
+#from reportlab.pdfbase.pdfmetrics import stringWidth 
 from io import BytesIO
 import qrcode
 from schemas.area_imovel_projeto_schema import PlusCode
+import os
 
 
-def gerar_pdf_bytes(info_pluscode: PlusCode):
+def gerar_pdf_bytes(info_pluscode: PlusCode, user_info: dict):
+    """
+    Colocar informações do usuário no PDF,
+    Informações:
+    
+    info_pluscode:
+            - email
+    
+    user_info:
+            - cpf
+            - nome 
+            - sobrenome 
+    """
+
+
 
     buffer = BytesIO()
     c = canvas.Canvas(buffer, pagesize=A4)
     width, height = A4
+    # Definir margem padrão
+    margin = 40
+
+    # Logo 
+    logo_path = os.path.join("assets", "geomaps_logo.jpg")
+    if os.path.exists(logo_path):
+        c.drawImage(logo_path, width/2 - 60, height - 140, width=120, height=60, preserveAspectRatio=True, mask='auto')
+
 
     # Título
-    c.translate(inch,inch)
-    c.setFont("Helvetica-Bold", 18)
-    c.drawString(72, height - 172, "Certificado de Endereço Digital")
+    c.setFont("Helvetica-Bold", 24)
+    c.drawCentredString(width/2, height - 180, "CERTIFICADO DE ENDEREÇO DIGITAL")
 
-    # Texto (você pode ajustar posições/tamanhos)
+    # Subtítulo
+    c.setFont("Helvetica-Oblique", 12)
+    c.drawCentredString(width/2, height - 200, "Documento oficial de validação de localização digital")
+
+    #  Texto principal
+    y = height - 260
     c.setFont("Helvetica", 12)
-    """
-    Certificado de Endereço Digital
-    Este certificado atesta a existência e a exatidão do endereço digital associado ao imóvel a seguir.
-    """
-    c.drawString(72, height - 220, f"Certificado de Endereço Digital")
-    c.drawString(72, height - 250, f"Este certificado atesta a existência e a exatidão do endereço digital associado ao imóvel a seguir.")
-    c.drawString(72, height - 320, f"Proprietário: {info_pluscode.owner_name}")
-    c.drawString(72, height - 340, f"Imóvel (CAR/ID): {info_pluscode.cod_imovel}")
-    c.drawString(72, height - 360, f"Plus Code: {info_pluscode.pluscode_cod}")
-    c.drawString(72, height - 380, f"Coordenadas: {info_pluscode.cordinates}")
-    c.drawString(72, height - 400, f"Data/Hora (UTC): {info_pluscode.validation_date}")
-    c.drawString(72, height - 420, f"Hash de Validação: {info_pluscode.id}")
+   
+   # Texto introdutório
+    c.setFont("Helvetica", 12)
+    c.drawString(80, y, "Este certificado atesta a existência e a exatidão do endereço digital associado ao")
+    y -= 15
+    c.drawString(80, y, "imóvel a seguir.")
+    y -= 30
+
+        # Nome do proprietário e infos usuários
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(80, y, "Nome do proprietário: ")
+    # Nome
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(80, y, "Nome do proprietário: ")
+    c.setFont("Helvetica", 12)
+    c.drawString(
+        250, y, f"{user_info.get('nome', '')} {user_info.get('sobrenome', '')}"
+    )
+    y -= 20
+
+    # CPF
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(80, y, "CPF do proprietário: ")
+    c.setFont("Helvetica", 12)
+    c.drawString(250, y, f"{user_info.get('cpf', '')}")
+    y -= 20
+
+    # Email
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(80, y, "E-mail do proprietário: ")
+    c.setFont("Helvetica", 12)
+    c.drawString(250, y, f"{info_pluscode.owner_email}")
+    y -= 30
+
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(80, y, "Identificação do imóvel: ")
+    c.setFont("Helvetica", 12)
+    c.drawString(250, y, f"{info_pluscode.cod_imovel}")
+    y -= 20
+
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(80, y, "Plus Code: ")
+    c.setFont("Helvetica", 12)
+    c.drawString(250, y, f"{info_pluscode.pluscode_cod}")
+    y -= 30
+
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(80, y, "Coordenadas Geográficas: ")
+    y -= 20
+    c.setFont("Helvetica", 12)
+    c.drawString(120, y, f"{info_pluscode.cordinates}")
+    y -= 30
+
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(80, y, "Data e Hora da Validação: ")
+    c.setFont("Helvetica", 12)
+    c.drawString(250, y, f"{info_pluscode.validation_date}")
+    y -= 20
+
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(80, y, "Hash/ID de Validação: ")
+    c.setFont("Helvetica", 12)
+    c.drawString(250, y, f"{info_pluscode.id}")
+    y -= 40
     
-    # Linhas 
-    c.line(0,0,0,10*inch)
-    c.line(0,0,7*inch,0)
-    c.setStrokeColorRGB(0.2,0.5,0.3)
+    # Texto final
+    c.setFont("Helvetica", 11)
+    c.drawString(80, y, "Este documento comprova a autenticidade das informações de localização no momento da ")
+    y -= 15 #quebra de linha manual 
+    c.drawString(80, y, "emissão, sendo uma ferramenta para validação e rastreabilidade digital.")
 
 
     # QR Code com infos (imovel|plus|hash)
@@ -48,7 +129,18 @@ def gerar_pdf_bytes(info_pluscode: PlusCode):
     img = ImageReader(qr_buffer)
 
     # Mostrar QR code
-    c.drawImage(img, width - 160, height - 700, width=120, height=120)
+    c.drawImage(img, width - 180, margin + 40, width=120, height=120)
+
+    # Rodapé 
+    c.setStrokeColorRGB(0.5, 0.5, 0.5)
+    c.line(margin, margin + 20, width - margin, margin + 20)
+    c.setFont("Helvetica-Oblique", 9)
+    c.drawCentredString(width/2, margin + 8, "Emitido automaticamente pelo sistema GeoMaps")
+
+    # Moldura do doc
+    c.setStrokeColorRGB(0, 0, 0.5)  # azul escuro
+    c.setLineWidth(4)
+    c.rect(margin, margin, width - 2*margin, height - 2*margin, stroke=1, fill=0)
 
     c.showPage()
     c.save()
