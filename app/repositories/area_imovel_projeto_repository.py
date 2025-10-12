@@ -1,7 +1,8 @@
 from core.database import collection
 from schemas.area_imovel_projeto_schema import Feature
-from schemas.plus_code_schema import CreatePlusCode, UpdatePlusCode
+from schemas.plus_code_schema import CreatePlusCode, UpdatePlusCode, PlusCode
 from typing import List
+from datetime import datetime
 
 
 async def list_properties(cod_cpf: str) -> Feature:    
@@ -50,6 +51,9 @@ async def update_properties_plus_code(cod_imovel: str, pluscode: UpdatePlusCode)
 
         # Find the property by cod_imovel, that will be add a pluscode
         query_filter = {'properties.cod_imovel': cod_imovel}
+        property = await collection.find_one(query_filter)
+        
+        old_pluscode = property.get('pluscode')
 
         # Checking null values
         user_pluscode = {key: value for key, value in pluscode.model_dump().items() if value is not None}
@@ -60,9 +64,33 @@ async def update_properties_plus_code(cod_imovel: str, pluscode: UpdatePlusCode)
         # Making the update 
         result = await collection.update_one(query_filter, update_operation)
         
+        if result:
+            
+            update_property = await collection.find_one(query_filter) 
+            await save_update_log(cod_imovel, update_property['pluscode'])
+        
         return result
 
 
+async def save_update_log(cod_imovel: str, info_pluscode: PlusCode) -> None:
+    
+    # Finding the property
+    query_filter = {'properties.cod_imovel': cod_imovel}
+    
+    
+    update_obj = {
+        "surname": info_pluscode.get('surname'),
+        "pluscode_cod": info_pluscode.get('pluscode_cod'),
+        "coordinates": info_pluscode.get('cordinates'),
+        "validation_date": info_pluscode.get('validation_date'),
+        "change_date": datetime.now()
+    }
+    
+    update_query = {"$push": {'update_logs': update_obj}}
+    result = await collection.update_one(query_filter, update_query)
+    
+    return result
+    
     
 
 async def get_property_polygon(cod_imovel:str) -> List:
@@ -89,5 +117,8 @@ async def get_property_polygon(cod_imovel:str) -> List:
           raise Exception(f'Imóvel com código {cod_imovel} não encontrado')
      
     return result_list
+
+
+
 
 
