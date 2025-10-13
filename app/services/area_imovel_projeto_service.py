@@ -1,7 +1,10 @@
 from repositories.area_imovel_projeto_repository import list_properties
-from repositories.area_imovel_projeto_repository import list_properties, add_properties_plus_code, get_property_polygon, update_properties_plus_code
+from repositories.area_imovel_projeto_repository import list_properties, add_properties_plus_code, get_property_polygon, update_properties_plus_code, add_image_to_property, get_property_image
 from schemas.plus_code_schema import CreatePlusCode, UpdatePlusCode
 from utils.pluscode_utils import generate_plus_code, validate_coordinate
+from utils.image_utils import compress_image
+from bson import Binary
+import base64
 
 async def list_properties_service(cod_cpf: str):
     return await list_properties(cod_cpf)
@@ -40,3 +43,20 @@ async def update_property_plus_code_service(cod_imovel:str, update_data: UpdateP
             update_data.pluscode_cod = generate_plus_code(lat=lat, long=long)
 
     return await update_properties_plus_code(cod_imovel=cod_imovel, pluscode=update_data)
+
+
+
+async def add_property_img(cod_imovel: str, contents):    
+    bytes = compress_image(contents)
+    
+    data = {'image_data': Binary(bytes)}
+    await add_image_to_property(cod_imovel, data)
+    
+    return {
+        'image_data': base64.b64encode(bytes).decode('utf-8'),
+        'content_type': 'WEBP'
+    }
+    
+async def get_img_service(cod_imovel:str):
+    return await get_property_image(cod_imovel)
+    

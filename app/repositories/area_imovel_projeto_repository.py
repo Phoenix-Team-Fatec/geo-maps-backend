@@ -1,12 +1,12 @@
 from core.database import collection
-from schemas.area_imovel_projeto_schema import Feature
+from schemas.area_imovel_projeto_schema import Feature, PropertyImage
 from schemas.plus_code_schema import CreatePlusCode, UpdatePlusCode, PlusCode
 from typing import List
 from datetime import datetime
+from utils.image_utils import process_property_photo
 
 
 async def list_properties(cod_cpf: str) -> Feature:    
-
     # Properties to find
     query = {"properties.cod_cpf": cod_cpf}
 
@@ -23,7 +23,6 @@ async def list_properties(cod_cpf: str) -> Feature:
     
 
 async def add_properties_plus_code(cod_imovel: str, pluscode: CreatePlusCode) -> None:
-
         # Find the property by cod_imovel, that will be add a pluscode
         query_filter = {'properties.cod_imovel': cod_imovel}
 
@@ -48,13 +47,9 @@ async def add_properties_plus_code(cod_imovel: str, pluscode: CreatePlusCode) ->
 
 
 async def update_properties_plus_code(cod_imovel: str, pluscode: UpdatePlusCode) -> None:
-
         # Find the property by cod_imovel, that will be add a pluscode
         query_filter = {'properties.cod_imovel': cod_imovel}
-        property = await collection.find_one(query_filter)
-        
-        old_pluscode = property.get('pluscode')
-
+    
         # Checking null values
         user_pluscode = {key: value for key, value in pluscode.model_dump().items() if value is not None}
 
@@ -73,7 +68,6 @@ async def update_properties_plus_code(cod_imovel: str, pluscode: UpdatePlusCode)
 
 
 async def save_update_log(cod_imovel: str, info_pluscode: PlusCode) -> None:
-    
     # Finding the property
     query_filter = {'properties.cod_imovel': cod_imovel}
     
@@ -86,7 +80,7 @@ async def save_update_log(cod_imovel: str, info_pluscode: PlusCode) -> None:
         "change_date": datetime.now()
     }
     
-    update_query = {"$push": {'update_logs': update_obj}}
+    update_query = {"$push": {'pluscode.updates_logs': update_obj}}
     result = await collection.update_one(query_filter, update_query)
     
     return result
@@ -94,7 +88,6 @@ async def save_update_log(cod_imovel: str, info_pluscode: PlusCode) -> None:
     
 
 async def get_property_polygon(cod_imovel:str) -> List:
-
     # Finding the property     
     query_filter = {'properties.cod_imovel': cod_imovel}
 
@@ -120,5 +113,32 @@ async def get_property_polygon(cod_imovel:str) -> List:
 
 
 
+async def add_image_to_property(cod_imovel: str, info_img: dict) -> dict:
+    query_filter = {'properties.cod_imovel': cod_imovel}
+    
+    update_operation = {'$set': {'properties.photo': info_img}}
+    
+    result = await collection.update_one(query_filter, update_operation)
+    
+    if result.modified_count > 0:
+        return info_img
+    else:
+        raise Exception("Não possível adicionar uma imagem a propriedade")
+    
+    
+ 
+async def get_property_image(cod_imovel: str) -> str:
+    query_filter = {'properties.cod_imovel': cod_imovel}
+    doc = await collection.find_one(query_filter)
+    
+    properties = process_property_photo(doc.get('properties', {}))
+    photo_base64 = properties.get('photo')
+    
+    if not photo_base64:
+        raise Exception('Propriedade sem foto')
 
-
+    return {
+        "content_type": "WEBP",
+        "image_data": photo_base64
+    }
+    
