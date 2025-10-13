@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from app.models.ocorrencia_model import Ocorrencia
-from app.services.ocorrencia_service import registrar_ocorrencia, listar_ocorrencias_ativas
+from models.ocorrencia_model import Ocorrencia
+from services.ocorrencia_service import registrar_ocorrencia, listar_ocorrencias_ativas
 
 router = APIRouter()
 

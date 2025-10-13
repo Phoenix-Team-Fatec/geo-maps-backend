@@ -34,6 +34,3 @@ if __name__ == "__main__":
     print("Conexão com o Mongo feita com sucesso")
 
 
-
-
-

@@ -1,10 +1,10 @@
 from fastapi import APIRouter, HTTPException, status, Depends, Response, Request
 from jose import JWTError, jwt
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from app.schemas.user import UserCreate, UserRead, Token, Credentials
-from app.services.user import create_user_service, authenticate_user, UserAlreadyExistsError, AuthError
-from app.core.security import create_access_token, create_refresh_token, decode_token, refresh_session, revoke_jti, ALGORITHM, SECRET_KEY
-from app.repositories.user import find_user_by_email
+from schemas.user import UserCreate, UserRead, Token, Credentials
+from services.user import create_user_service, authenticate_user, UserAlreadyExistsError, AuthError
+from core.security import create_access_token, create_refresh_token, decode_token, refresh_session, revoke_jti, ALGORITHM, SECRET_KEY
+from repositories.user import find_user_by_email
 
 #Declara o prefixo das rotas de autenticação, e a forma de receber o token
 auth = APIRouter(prefix="/auth", tags=["Auth"])
@@ -72,7 +72,7 @@ async def refresh(request: Request, response: Response):
             path="/auth",
         )
 
-        return {"access_token": new_access, "expires_in": 15 * 60, "token_type": "bearer"}
+        return {"access_token": new_access, "refresh_token": new_refresh, "expires_in": 15 * 60, "token_type": "bearer"}
     except ValueError as e:
         raise HTTPException(status_code=401, detail=str(e))
 

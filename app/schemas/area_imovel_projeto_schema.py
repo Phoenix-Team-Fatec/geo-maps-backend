@@ -1,16 +1,7 @@
 from pydantic import BaseModel
-from typing import List, Optional,Tuple
+from typing import List, Optional,Union
 from bson import ObjectId
-
-# Modelo para as coordenadas (lista de [longitude, latitude])
-class Coordinate(BaseModel):
-    # Cada coordenada é uma tupla de dois floats (longitude, latitude)
-    longitude: float
-    latitude: float
-
-    # Configuração para permitir a conversão de listas em tuplas
-    class Config:
-        arbitrary_types_allowed = True
+from .plus_code_schema import PlusCode
 
 # Modelo para a geometria do tipo Polygon
 class Geometry(BaseModel):
@@ -32,14 +23,15 @@ class Properties(BaseModel):
     municipio: Optional[str] = None
     nom_tema: Optional[str] = None
     num_area: Optional[float] = None
+    photo: Optional[Union[str, dict]] = None
 
 # Modelo principal que representa a estrutura completa do GeoJSON
 class Feature(BaseModel):
     id: str  # ID do recurso (não o ObjectId, mas o campo 'id' do JSON)
-    type: str  # Tipo do recurso, ex: "Feature"
     geometry: Geometry  # Geometria do imóvel
     properties: Properties  # Propriedades do imóvel
     _id: ObjectId  # ObjectId do MongoDB
+    pluscode: Optional[PlusCode] = None
 
     # Configuração para suportar ObjectId e validação
     class Config:
@@ -47,3 +39,8 @@ class Feature(BaseModel):
         json_encoders = {
             ObjectId: str  # Converte ObjectId para string no JSON
         }
+        
+
+class PropertyImage(BaseModel):
+    content_type: Optional[str] = 'WEBP'
+    image_data: str

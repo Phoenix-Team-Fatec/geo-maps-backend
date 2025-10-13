@@ -1,4 +1,4 @@
-from app.core.database import db
+from core.database import db
 
 
 
