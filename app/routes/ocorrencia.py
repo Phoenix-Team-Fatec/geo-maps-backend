@@ -1,0 +1,41 @@
+from fastapi import APIRouter, HTTPException
+from app.models.ocorrencia_model import Ocorrencia
+from app.services.ocorrencia_service import registrar_ocorrencia, listar_ocorrencias_ativas
+
+router = APIRouter()
+
+# POST - REGISTRAR OCORRÊNCIAS
+# Rota responsável por receber uma nova ocorrência via requisição POST.
+# O corpo da requisição (JSON) é validado automaticamente pelo modelo Pydantic (Ocorrencia).
+# Caso a validação falhe, o FastAPI retorna automaticamente um erro 422 (Unprocessable Entity).
+@router.post("/ocorrencias")
+async def criar_ocorrencia(ocorrencia: Ocorrencia):
+    try:
+        # Chama a função de serviço que faz as validações e salva no banco.
+        result = await registrar_ocorrencia(ocorrencia)
+
+        # Retorna uma resposta simples com status e o ID gerado pelo banco.
+        return {"status": "registrado", "id": str(result.inserted_id)}
+    
+    # Captura erros de validação de negócio definidos no service.
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    
+    # Captura erros inesperados (ex: conexão com banco, falhas internas).
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao registrar ocorrência: {e}")
+
+# GET - LISTAR OCORRÊNCIAS ATIVAS
+# Rota para buscar e retornar todas as ocorrências ainda válidas/ativas.
+# Essa função chama o service que filtra as ocorrências com base na expiração.
+@router.get("/ocorrencias")
+async def listar_ocorrencias():
+    try:
+
+        # Chama o service que busca no banco apenas as ocorrências válidas.
+        resultados = await listar_ocorrencias_ativas()
+        return resultados
+    
+        # Captura qualquer erro inesperado e retorna código 500 (erro interno do servidor).
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao listar ocorrências: {e}")
