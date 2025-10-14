@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from routes.area_imovel_projeto import area_imovel_router
 from routes.auth import auth
 from routes.auth_password_reset import auth as auth_password_reset
+from routes.routes import routes_router
 from core.database import ensure_indexes
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -26,3 +27,4 @@ app.add_middleware(
 app.include_router(area_imovel_router)
 app.include_router(auth)
 app.include_router(auth_password_reset)
+app.include_router(routes_router)
