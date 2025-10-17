@@ -1,7 +1,8 @@
 from pydantic import BaseModel, Field
 from datetime import datetime
 from enum import Enum
-
+from schemas.coordinate_schema import Coordinate
+from typing import Optional, List
 
 # Definição dos tipos de ocorrência e gravidade 
 # Isso garante que apenas valores válidos sejam aceitos pelo backend,
@@ -20,6 +21,6 @@ class GravidadeOcorrencia(str, Enum):
 class Ocorrencia(BaseModel):
     tipo: TipoOcorrencia
     gravidade: GravidadeOcorrencia
-    latitude: float
-    longitude: float
+    coordinate: Coordinate
+    area: Optional[List] = None
     data_registro: datetime = Field(default_factory=datetime.utcnow)

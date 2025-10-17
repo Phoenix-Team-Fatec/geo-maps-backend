@@ -1,18 +1,19 @@
 from fastapi import APIRouter, HTTPException
 from models.ocorrencia_model import Ocorrencia
 from services.ocorrencia_service import registrar_ocorrencia, listar_ocorrencias_ativas
+from schemas.coordinate_schema import Coordinate
 
-router = APIRouter()
+ocorrencia_router = APIRouter(prefix='/ocorrencia',tags=['Ocorrencias'])
 
 # POST - REGISTRAR OCORRÊNCIAS
 # Rota responsável por receber uma nova ocorrência via requisição POST.
 # O corpo da requisição (JSON) é validado automaticamente pelo modelo Pydantic (Ocorrencia).
 # Caso a validação falhe, o FastAPI retorna automaticamente um erro 422 (Unprocessable Entity).
-@router.post("/ocorrencias")
-async def criar_ocorrencia(ocorrencia: Ocorrencia):
+@ocorrencia_router.post('/adicionar')
+async def criar_ocorrencia(ocorrencia: Ocorrencia, user_coordinate: Coordinate):
     try:
         # Chama a função de serviço que faz as validações e salva no banco.
-        result = await registrar_ocorrencia(ocorrencia)
+        result = await registrar_ocorrencia(ocorrencia, user_coordinate)
 
         # Retorna uma resposta simples com status e o ID gerado pelo banco.
         return {"status": "registrado", "id": str(result.inserted_id)}
@@ -28,10 +29,9 @@ async def criar_ocorrencia(ocorrencia: Ocorrencia):
 # GET - LISTAR OCORRÊNCIAS ATIVAS
 # Rota para buscar e retornar todas as ocorrências ainda válidas/ativas.
 # Essa função chama o service que filtra as ocorrências com base na expiração.
-@router.get("/ocorrencias")
+@ocorrencia_router.get("/listar")
 async def listar_ocorrencias():
     try:
-
         # Chama o service que busca no banco apenas as ocorrências válidas.
         resultados = await listar_ocorrencias_ativas()
         return resultados

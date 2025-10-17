@@ -24,3 +24,6 @@ async def salvar_ocorrencia(ocorrencia_data: dict):
     """
     result = await ocorrencias_collection.insert_one(ocorrencia_data)
     return result
+
+
+
