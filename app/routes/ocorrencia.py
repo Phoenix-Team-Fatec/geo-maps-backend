@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from models.ocorrencia_model import Ocorrencia
-from services.ocorrencia_service import registrar_ocorrencia, listar_ocorrencias_ativas
+from services.ocorrencia_service import registrar_ocorrencia, listar_ocorrencias_ativas_service
 from schemas.coordinate_schema import Coordinate
 
 ocorrencia_router = APIRouter(prefix='/ocorrencia',tags=['Ocorrencias'])
@@ -33,7 +33,7 @@ async def criar_ocorrencia(ocorrencia: Ocorrencia, user_coordinate: Coordinate):
 async def listar_ocorrencias():
     try:
         # Chama o service que busca no banco apenas as ocorrências válidas.
-        resultados = await listar_ocorrencias_ativas()
+        resultados = await listar_ocorrencias_ativas_service()
         return resultados
     
         # Captura qualquer erro inesperado e retorna código 500 (erro interno do servidor).

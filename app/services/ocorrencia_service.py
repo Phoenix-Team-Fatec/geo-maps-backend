@@ -1,10 +1,9 @@
 from datetime import datetime, timedelta
 from models.ocorrencia_model import Ocorrencia
 from repositories.ocorrencia_repository import salvar_ocorrencia
-from core.database import db
 from schemas.coordinate_schema import Coordinate
 from utils.ocorrencia_utils import make_area_from_coordinate
-
+from repositories.ocorrencia_repository import listar_ocorrencias_ativas
 
 def calcular_expira_em(gravidade: str) -> datetime:
     """
@@ -32,7 +31,7 @@ def calcular_expira_em(gravidade: str) -> datetime:
 async def registrar_ocorrencia(ocorrencia: Ocorrencia, user_coordinate: Coordinate):
     """
     Registra uma nova ocorrência no sistema.
-    Realiza:
+    Realiza:    
     - Validações de dados (latitude/longitude)
     - Prevenção de duplicatas ainda ativas
     - Cálculo do tempo de expiração
@@ -47,24 +46,11 @@ async def registrar_ocorrencia(ocorrencia: Ocorrencia, user_coordinate: Coordina
     Raises:
         ValueError: Se latitude/longitude forem inválidas ou se houver duplicata ativa
     """
-    
     if ocorrencia.coordinate != user_coordinate:
         raise ValueError("As coordenadas fornecidas não correspondem à localização do usuário")
 
-    ocorrencias_collection = db["ocorrencias"]
-
     agora = datetime.now()
-    duplicata = await ocorrencias_collection.find_one({
-        "tipo": ocorrencia.tipo,
-        "gravidade": ocorrencia.gravidade,
-        "latitude": ocorrencia.coordinate.latitude,
-        "longitude": ocorrencia.coordinate.longitude,
-        "expira_em": {"$gt": agora}
-    })
-    if duplicata:
-        raise ValueError("Ocorrência duplicada ainda ativa")
     
-
     ocorrencia_dict = ocorrencia.model_dump()
     ocorrencia_dict["data_registro"] = agora
     ocorrencia_dict["expira_em"] = calcular_expira_em(ocorrencia.gravidade)
@@ -74,27 +60,17 @@ async def registrar_ocorrencia(ocorrencia: Ocorrencia, user_coordinate: Coordina
     return result
 
 
-async def listar_ocorrencias_ativas(limit: int = 100):
+
+async def listar_ocorrencias_ativas_service():
     """
-    Lista apenas ocorrências ativas.
+    Lista todas as ocorrências ativas no sistema.
     
-    Busca no banco todas as ocorrências cuja data de expiração
-    ainda não foi atingida. Útil para exibir apenas eventos recentes
-    no mapa ou painel do frontend.
-    
-    Args:
-        limit (int): Número máximo de ocorrências a retornar (padrão: 100)
+    Retorna apenas ocorrências cuja data de expiração ainda não foi atingida.
+    Útil para exibir eventos recentes no mapa ou painel do frontend.
     
     Returns:
         list: Lista de ocorrências ativas com dados formatados
     """
-    ocorrencias_collection = db["ocorrencias"]
-    agora = datetime.now()
-    resultados = await ocorrencias_collection.find({"expira_em": {"$gt": agora}}).to_list(limit)
-
-    for ocorrencia in resultados:
-        ocorrencia["_id"] = str(ocorrencia["_id"])
-        ocorrencia["data_registro"] = ocorrencia["data_registro"].strftime("%d/%m/%Y %H:%M")
-        ocorrencia["expira_em"] = ocorrencia["expira_em"].strftime("%d/%m/%Y %H:%M")
+    resultados = await listar_ocorrencias_ativas()
 
     return resultados

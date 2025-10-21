@@ -40,6 +40,8 @@ async def add_properties_plus_code(cod_imovel: str, pluscode: CreatePlusCode) ->
         result = await collection.update_one(query_filter, update_operation)
         
         if result.modified_count > 0:
+            update_property = await collection.find_one(query_filter) 
+            await save_update_log(cod_imovel, update_property['pluscode'])
             return pluscode
         else:
             raise Exception("Não foi possível adicionar o PlusCode")
@@ -59,8 +61,7 @@ async def update_properties_plus_code(cod_imovel: str, pluscode: UpdatePlusCode)
         # Making the update 
         result = await collection.update_one(query_filter, update_operation)
         
-        if result:
-            
+        if result:      
             update_property = await collection.find_one(query_filter) 
             await save_update_log(cod_imovel, update_property['pluscode'])
         

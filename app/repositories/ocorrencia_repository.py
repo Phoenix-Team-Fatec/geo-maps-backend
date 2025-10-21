@@ -1,3 +1,4 @@
+from datetime import datetime
 from core.database import db
 
 
@@ -22,8 +23,41 @@ async def salvar_ocorrencia(ocorrencia_data: dict):
         result (InsertOneResult): Resultado da operação de inserção,
         incluindo o 'inserted_id' que identifica o documento salvo.
     """
+    agora = datetime.now()
+    duplicata = await ocorrencias_collection.find_one({
+        "tipo": ocorrencia_data['tipo'],
+        "gravidade": ocorrencia_data['gravidade'],
+        "latitude": ocorrencia_data['coordinate']['latitude'],
+        "longitude": ocorrencia_data['coordinate']['longitude'],
+        "expira_em": {"$gt": agora}
+    })
+    if duplicata:
+        raise ValueError("Ocorrência duplicada ainda ativa")
+    
     result = await ocorrencias_collection.insert_one(ocorrencia_data)
     return result
 
 
+async def listar_ocorrencias_ativas(limit: int = 100):
+    """
+    Lista apenas ocorrências ativas.
+    
+    Busca no banco todas as ocorrências cuja data de expiração
+    ainda não foi atingida. Útil para exibir apenas eventos recentes
+    no mapa ou painel do frontend.
+    
+    Args:
+        limit (int): Número máximo de ocorrências a retornar (padrão: 100)
+    
+    Returns:
+        list: Lista de ocorrências ativas com dados formatados
+    """
+    agora = datetime.now()
+    resultados = await ocorrencias_collection.find({"expira_em": {"$gt": agora}}).to_list(limit)
 
+    for ocorrencia in resultados:
+        ocorrencia["_id"] = str(ocorrencia["_id"])
+        ocorrencia["data_registro"] = ocorrencia["data_registro"].strftime("%d/%m/%Y %H:%M")
+        ocorrencia["expira_em"] = ocorrencia["expira_em"].strftime("%d/%m/%Y %H:%M")
+
+    return resultados
