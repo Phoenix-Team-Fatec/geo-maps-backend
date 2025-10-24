@@ -10,8 +10,8 @@ from typing import Optional, List
 class TipoOcorrencia(str, Enum):
     transito = "trânsito"
     acidente = "acidente"
-    veiculo_acostamento = "veículo no acostamento"
-    policia_rodoviaria = "polícia rodoviária"
+    veiculo_acostamento = "veículo parado"
+    policia_rodoviaria = "polícia"
 
 class GravidadeOcorrencia(str, Enum):
     leve = "leve"
