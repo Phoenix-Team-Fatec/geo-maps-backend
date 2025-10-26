@@ -12,7 +12,7 @@ class PlusCode(BaseModel):
     cod_imovel: str
     cordinates: Coordinate
     validation_date: datetime = Field(default_factory=datetime.now)
-    updates_logs: List
+    updates_logs: Optional[list] = []
 
     class Config:
         arbitrary_types_allowed = True

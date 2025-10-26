@@ -1,8 +1,10 @@
 from fastapi import FastAPI
 from routes.area_imovel_projeto import area_imovel_router
+from routes.plus_code import plus_code
 from routes.auth import auth
 from routes.auth_password_reset import auth as auth_password_reset
 from core.database import ensure_indexes
+from routes.routes import routes_router
 from fastapi.middleware.cors import CORSMiddleware
 from routes.ocorrencia import ocorrencia_router
 
@@ -29,3 +31,5 @@ app.include_router(area_imovel_router)
 app.include_router(auth)
 app.include_router(ocorrencia_router) 
 app.include_router(auth_password_reset)
+app.include_router(routes_router)
+app.include_router(plus_code)
