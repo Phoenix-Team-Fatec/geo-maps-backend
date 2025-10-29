@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List, Optional,Tuple
+from typing import List, Optional,Union
 from bson import ObjectId
 from .plus_code_schema import PlusCode
 
@@ -23,6 +23,7 @@ class Properties(BaseModel):
     municipio: Optional[str] = None
     nom_tema: Optional[str] = None
     num_area: Optional[float] = None
+    photo: Optional[Union[str, dict]] = None
 
 # Modelo principal que representa a estrutura completa do GeoJSON
 class Feature(BaseModel):
@@ -38,3 +39,8 @@ class Feature(BaseModel):
         json_encoders = {
             ObjectId: str  # Converte ObjectId para string no JSON
         }
+        
+
+class PropertyImage(BaseModel):
+    content_type: Optional[str] = 'WEBP'
+    image_data: str

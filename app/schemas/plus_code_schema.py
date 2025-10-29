@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field, EmailStr
 from .coordinate_schema import Coordinate
 from datetime import datetime
 from uuid import uuid4
-from typing import Optional
+from typing import Optional, List
 
 class PlusCode(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid4())[:8])
@@ -12,6 +12,7 @@ class PlusCode(BaseModel):
     cod_imovel: str
     cordinates: Coordinate
     validation_date: datetime = Field(default_factory=datetime.now)
+    updates_logs: Optional[list] = []
 
     class Config:
         arbitrary_types_allowed = True

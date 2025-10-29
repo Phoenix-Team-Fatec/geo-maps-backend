@@ -1,8 +1,9 @@
-from fastapi import APIRouter, HTTPException, BackgroundTasks
-from schemas.area_imovel_projeto_schema import Feature
+from fastapi import APIRouter, HTTPException, BackgroundTasks, UploadFile, File
+from fastapi.responses import StreamingResponse
+from schemas.area_imovel_projeto_schema import Feature, PropertyImage
 from schemas.plus_code_schema import PlusCode, CreatePlusCode, UpdatePlusCode
 from typing import List
-from services.area_imovel_projeto_service import list_properties_service, add_properties_plus_code_service, update_property_plus_code_service
+from services.area_imovel_projeto_service import list_properties_service, add_properties_plus_code_service, update_property_plus_code_service, add_property_img, get_img_service
 from services.pdf_services import send_pdf_service
 
 
@@ -22,7 +23,6 @@ async def list_properties(cod_cpf:str):
 async def add_pluscode(cod_imovel: str, request: CreatePlusCode):
     try:
         property_pluscode = await add_properties_plus_code_service(cod_imovel, request)
-        
         return {
             "message": "PlusCode adicionado com sucesso",
             "cod_imovel": cod_imovel,
@@ -36,7 +36,6 @@ async def add_pluscode(cod_imovel: str, request: CreatePlusCode):
 async def update_pluscode(cod_imovel: str, request:UpdatePlusCode ):
     try:
         property_pluscode = await update_property_plus_code_service(cod_imovel, request)
-        
         return {
             "message": "PlusCode atualizado com sucesso",
             "cod_imovel": cod_imovel
@@ -56,3 +55,22 @@ async def create_certificate(req_pluscode: PlusCode, background_tasks: Backgroun
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+    
+@area_imovel_router.post('/upload/{cod_imovel}/img', response_model=PropertyImage)
+async def upload_property_img(cod_imovel:str, file: UploadFile = File(...)):
+    try:
+        contents = await file.read()
+        response = await add_property_img(cod_imovel, contents=contents)
+        return PropertyImage(**response)        
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))   
+    
+
+@area_imovel_router.get('image/{cod_imovel}/property', response_model=PropertyImage)
+async def get_property_img(cod_imovel:str):
+    try:
+        property_image = await get_img_service(cod_imovel)
+        return PropertyImage(**property_image)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
