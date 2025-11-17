@@ -1,9 +1,9 @@
-from core.database import collection
-from schemas.area_imovel_projeto_schema import Feature, PropertyImage
-from schemas.plus_code_schema import CreatePlusCode, UpdatePlusCode, PlusCode
+from app.core.database import collection
+from app.schemas.area_imovel_projeto_schema import Feature, PropertyImage
+from app.schemas.plus_code_schema import CreatePlusCode, UpdatePlusCode, PlusCode
 from typing import List
 from datetime import datetime
-from utils.image_utils import process_property_photo
+from app.utils.image_utils import process_property_photo
 
 
 async def list_properties(cod_cpf: str) -> Feature:    

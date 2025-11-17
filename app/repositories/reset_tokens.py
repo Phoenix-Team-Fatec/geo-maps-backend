@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 from bson import ObjectId
-from core.database import db 
+from app.core.database import db 
 from pymongo import ASCENDING, DESCENDING
 
 reset_tokens_collection = db["reset_tokens"]

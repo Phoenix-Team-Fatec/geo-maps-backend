@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
-from models.ocorrencia_model import Ocorrencia
-from services.ocorrencia_service import registrar_ocorrencia, listar_ocorrencias_ativas_service
-from schemas.coordinate_schema import Coordinate
+from app.models.ocorrencia_model import Ocorrencia
+from app.services.ocorrencia_service import registrar_ocorrencia, listar_ocorrencias_ativas_service
+from app.schemas.coordinate_schema import Coordinate
 
 ocorrencia_router = APIRouter(prefix='/ocorrencia',tags=['Ocorrencias'])
 

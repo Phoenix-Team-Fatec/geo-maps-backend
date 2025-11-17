@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta
-from models.ocorrencia_model import Ocorrencia
-from repositories.ocorrencia_repository import salvar_ocorrencia
-from schemas.coordinate_schema import Coordinate
-from utils.ocorrencia_utils import make_area_from_coordinate
-from repositories.ocorrencia_repository import listar_ocorrencias_ativas
+from app.models.ocorrencia_model import Ocorrencia
+from app.repositories.ocorrencia_repository import salvar_ocorrencia
+from app.schemas.coordinate_schema import Coordinate
+from app.utils.ocorrencia_utils import make_area_from_coordinate
+from app.repositories.ocorrencia_repository import listar_ocorrencias_ativas
 
 def calcular_expira_em(gravidade: str) -> datetime:
     """

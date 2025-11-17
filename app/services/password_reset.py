@@ -2,12 +2,12 @@
 from bson import ObjectId
 from fastapi import HTTPException, status
 from typing import Optional
-from repositories.user import find_user_by_email
-from repositories.reset_tokens import (
+from app.repositories.user import find_user_by_email
+from app.repositories.reset_tokens import (
     create_reset_token, get_active_token, increment_attempts, mark_used
 )
-from core.security import get_password_hash, generate_code, hash_code, verify_code, expires_at_from_now, MAX_RESET_ATTEMPTS
-from core.database import users_collection
+from app.core.security import get_password_hash, generate_code, hash_code, verify_code, expires_at_from_now, MAX_RESET_ATTEMPTS
+from app.core.database import users_collection
 
 def _normalize_email(email: str) -> str:
     return email.lower()

@@ -1,4 +1,4 @@
-from repositories.plus_code_repository import get_all_plus_codes
+from app.repositories.plus_code_repository import get_all_plus_codes
 
 async def get_all_plus_codes_from_db():
     """

@@ -1,8 +1,8 @@
-from repositories.area_imovel_projeto_repository import list_properties
-from repositories.area_imovel_projeto_repository import list_properties, add_properties_plus_code, get_property_polygon, update_properties_plus_code, add_image_to_property, get_property_image
-from schemas.plus_code_schema import CreatePlusCode, UpdatePlusCode
-from utils.pluscode_utils import generate_plus_code, validate_coordinate
-from utils.image_utils import compress_image
+from app.repositories.area_imovel_projeto_repository import list_properties
+from app.repositories.area_imovel_projeto_repository import list_properties, add_properties_plus_code, get_property_polygon, update_properties_plus_code, add_image_to_property, get_property_image
+from app.schemas.plus_code_schema import CreatePlusCode, UpdatePlusCode
+from app.utils.pluscode_utils import generate_plus_code, validate_coordinate
+from app.utils.image_utils import compress_image
 from bson import Binary
 import base64
 

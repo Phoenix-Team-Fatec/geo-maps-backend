@@ -1,4 +1,4 @@
-from core.database import collection
+from app.core.database import collection
 
 async def get_all_plus_codes(limit: int = 100):
     """

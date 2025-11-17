@@ -1,7 +1,7 @@
 # routes/auth_password_reset.py (ou dentro do seu arquivo atual)
 from fastapi import APIRouter, Response, status
-from schemas.plus_code_schema import PlusCode
-from services.plus_code_service import get_all_plus_codes_from_db
+from app.schemas.plus_code_schema import PlusCode
+from app.services.plus_code_service import get_all_plus_codes_from_db
 
 plus_code = APIRouter(prefix="/plus-code", tags=["Plus Code"])
 

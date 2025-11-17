@@ -1,13 +1,14 @@
 from fastapi import FastAPI
-from routes.area_imovel_projeto import area_imovel_router
-from routes.plus_code import plus_code
-from routes.auth import auth
-from routes.auth_password_reset import auth as auth_password_reset
-from routes.weather import weather_router
-from core.database import ensure_indexes
-from routes.routes import routes_router
+from app.routes.area_imovel_projeto import area_imovel_router
+from app.routes.plus_code import plus_code
+from app.routes.auth import auth
+from app.routes.auth_password_reset import auth as auth_password_reset
+from app.routes.weather import weather_router
+from app.core.database import ensure_indexes
+from app.routes.routes import routes_router
 from fastapi.middleware.cors import CORSMiddleware
-from routes.ocorrencia import ocorrencia_router
+from app.routes.ocorrencia import ocorrencia_router
+
 
 
 # Função para criar índices no banco ao iniciar a aplicação

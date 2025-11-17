@@ -1,9 +1,9 @@
-from utils.pdf_utils import gerar_pdf_bytes
-from utils.email_utils import send_email_with_attachment
-from schemas.plus_code_schema import PlusCode
+from app.utils.pdf_utils import gerar_pdf_bytes
+from app.utils.email_utils import send_email_with_attachment
+from app.schemas.plus_code_schema import PlusCode
 from starlette.concurrency import run_in_threadpool
 from fastapi import BackgroundTasks
-from repositories.user import find_user_by_email
+from app.repositories.user import find_user_by_email
 
 async def send_pdf_service(pluscode: PlusCode, background_tasks: BackgroundTasks):
     

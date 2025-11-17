@@ -1,7 +1,7 @@
 import pluscodes
 from shapely import Point, Polygon 
 from typing import List, Tuple
-from schemas.coordinate_schema import Coordinate
+from app.schemas.coordinate_schema import Coordinate
 from pprint import pprint
 
 class PointOutsideThePolygon(Exception):

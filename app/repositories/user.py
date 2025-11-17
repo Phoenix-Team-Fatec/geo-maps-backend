@@ -1,6 +1,6 @@
 from pymongo.errors import DuplicateKeyError
-from core.database import users_collection
-from schemas.user import UserCreate, UserRead
+from app.core.database import users_collection
+from app.schemas.user import UserCreate, UserRead
 
 #Cria o usuário no banco de dados
 async def create_user(user_data: UserCreate) -> UserRead:

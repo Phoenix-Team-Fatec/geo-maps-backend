@@ -1,5 +1,5 @@
 from datetime import datetime
-from core.database import db
+from app.core.database import db
 
 
 

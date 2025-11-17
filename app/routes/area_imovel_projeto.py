@@ -1,10 +1,10 @@
 from fastapi import APIRouter, HTTPException, BackgroundTasks, UploadFile, File
 from fastapi.responses import StreamingResponse
-from schemas.area_imovel_projeto_schema import Feature, PropertyImage
-from schemas.plus_code_schema import PlusCode, CreatePlusCode, UpdatePlusCode
+from app.schemas.area_imovel_projeto_schema import Feature, PropertyImage
+from app.schemas.plus_code_schema import PlusCode, CreatePlusCode, UpdatePlusCode
 from typing import List
-from services.area_imovel_projeto_service import list_properties_service, add_properties_plus_code_service, update_property_plus_code_service, add_property_img, get_img_service
-from services.pdf_services import send_pdf_service
+from app.services.area_imovel_projeto_service import list_properties_service, add_properties_plus_code_service, update_property_plus_code_service, add_property_img, get_img_service
+from app.services.pdf_services import send_pdf_service
 
 
 area_imovel_router = APIRouter(prefix='/area_imovel', tags=['Area_Imovel'])

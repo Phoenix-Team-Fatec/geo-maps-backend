@@ -1,5 +1,5 @@
 from shapely import Point, Polygon
-from schemas.coordinate_schema import Coordinate
+from app.schemas.coordinate_schema import Coordinate
 
 def make_area_from_coordinate(coordinate:Coordinate) -> Polygon:
     ponto = Point(coordinate.longitude, coordinate.latitude)

@@ -5,7 +5,7 @@ from reportlab.lib.units import inch
 #from reportlab.pdfbase.pdfmetrics import stringWidth 
 from io import BytesIO
 import qrcode
-from schemas.area_imovel_projeto_schema import PlusCode
+from app.schemas.area_imovel_projeto_schema import PlusCode
 import os
 
 
