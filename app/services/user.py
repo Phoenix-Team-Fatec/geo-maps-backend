@@ -1,6 +1,6 @@
 from fastapi.encoders import jsonable_encoder
 from pymongo.errors import DuplicateKeyError
-from repositories.user import create_user, find_user_by_email
+from repositories.user import create_user, find_user_by_email, get_all_users
 from schemas.user import UserCreate
 from core.security import get_password_hash, verify_password
 
@@ -43,6 +43,14 @@ async def authenticate_user(email: str, password: str) -> dict:
     email = _normalize_email(email)
     user = await find_user_by_email(email)
     #Verifica se o usuário existe e se a senha bate
+    user_is_blocked = user.get("is_blocked", False) if user else False
     if not user or not verify_password(password, user.get("hashed_password", "")):
         raise AuthError("Credenciais inválidas")
+    if user_is_blocked:
+        raise AuthError("Usuário bloqueado")
     return user
+
+
+async def get_all_users_service() -> list[dict]:
+    users = await get_all_users()
+    return [user.model_dump(exclude={"hashed_password"}) for user in users]

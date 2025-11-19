@@ -31,6 +31,7 @@ class UserRead(BaseModel):
     email: EmailStr
     data_nascimento: date
     image: Optional[AnyUrl] = None
+    is_blocked: Optional[bool] = False
 
 #Schema do token JWT
 class Token(BaseModel):
