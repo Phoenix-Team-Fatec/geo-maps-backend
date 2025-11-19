@@ -2,6 +2,8 @@ from pymongo import AsyncMongoClient
 import os
 from dotenv import load_dotenv
 
+
+
 load_dotenv()
 
 
@@ -32,5 +34,5 @@ async def ensure_indexes():
 
 if __name__ == "__main__":
     print("Conexão com o Mongo feita com sucesso")
-
+    
 

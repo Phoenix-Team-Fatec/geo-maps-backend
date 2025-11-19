@@ -10,6 +10,7 @@ class UserBase(BaseModel):
     email: Optional[EmailStr] = None
     data_nascimento: Optional[date] = None
     image: Optional[AnyUrl] = None
+    is_blocked: Optional[bool] = None
 
 #Schmea de criação do usuário
 class UserCreate(UserBase):
