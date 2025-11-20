@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from models.ocorrencia_model import Ocorrencia
-from services.ocorrencia_service import registrar_ocorrencia, listar_ocorrencias_ativas_service
+from services.ocorrencia_service import registrar_ocorrencia, listar_ocorrencias_ativas_service, listar_todas_ocorrencias_service
 from schemas.coordinate_schema import Coordinate
 
 ocorrencia_router = APIRouter(prefix='/ocorrencia',tags=['Ocorrencias'])
@@ -39,3 +39,17 @@ async def listar_ocorrencias():
         # Captura qualquer erro inesperado e retorna código 500 (erro interno do servidor).
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro ao listar ocorrências: {e}")
+
+
+# GET - LISTAR TODAS AS OCORRÊNCIAS
+# Rota para buscar e retornar todas as ocorrências, independentemente do status de expiração
+@ocorrencia_router.get("/listar_todas")
+async def listar_todas_ocorrencias():
+    try:
+        # Chama o service que busca no banco todas as ocorrências.
+        resultados = await listar_todas_ocorrencias_service()
+        return resultados
+    
+        # Captura qualquer erro inesperado e retorna código 500 (erro interno do servidor).
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao listar todas as ocorrências: {e}")

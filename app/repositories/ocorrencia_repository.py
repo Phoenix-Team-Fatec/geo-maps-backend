@@ -61,3 +61,22 @@ async def listar_ocorrencias_ativas(limit: int = 100):
         ocorrencia["expira_em"] = ocorrencia["expira_em"].strftime("%d/%m/%Y %H:%M")
 
     return resultados
+
+
+async def listar_ocorrencias():
+    """
+    Lista todas as ocorrências, independentemente do status de expiração.
+    
+    Útil para painéis administrativos onde é necessário ver o histórico completo.
+    
+    Returns:
+        list: Lista de todas as ocorrências com dados formatados
+    """
+    resultados = await ocorrencias_collection.find().to_list(1000)
+
+    for ocorrencia in resultados:
+        ocorrencia["_id"] = str(ocorrencia["_id"])
+        ocorrencia["data_registro"] = ocorrencia["data_registro"].strftime("%d/%m/%Y %H:%M")
+        ocorrencia["expira_em"] = ocorrencia["expira_em"].strftime("%d/%m/%Y %H:%M")
+
+    return resultados

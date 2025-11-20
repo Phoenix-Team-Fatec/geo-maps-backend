@@ -3,7 +3,7 @@ from models.ocorrencia_model import Ocorrencia
 from repositories.ocorrencia_repository import salvar_ocorrencia
 from schemas.coordinate_schema import Coordinate
 from utils.ocorrencia_utils import make_area_from_coordinate
-from repositories.ocorrencia_repository import listar_ocorrencias_ativas
+from repositories.ocorrencia_repository import listar_ocorrencias_ativas, listar_ocorrencias
 
 def calcular_expira_em(gravidade: str) -> datetime:
     """
@@ -72,5 +72,17 @@ async def listar_ocorrencias_ativas_service():
         list: Lista de ocorrências ativas com dados formatados
     """
     resultados = await listar_ocorrencias_ativas()
+
+    return resultados
+
+
+async def listar_todas_ocorrencias_service():
+    """
+    Lista todas as ocorrências no sistema, independentemente do status de expiração.
+    
+    Returns:
+        list: Lista de todas as ocorrências com dados formatados
+    """
+    resultados = await listar_ocorrencias()
 
     return resultados
