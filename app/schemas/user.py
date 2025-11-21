@@ -10,6 +10,7 @@ class UserBase(BaseModel):
     email: Optional[EmailStr] = None
     data_nascimento: Optional[date] = None
     image: Optional[AnyUrl] = None
+    is_blocked: Optional[bool] = None
 
 #Schmea de criação do usuário
 class UserCreate(UserBase):
@@ -30,6 +31,7 @@ class UserRead(BaseModel):
     email: EmailStr
     data_nascimento: date
     image: Optional[AnyUrl] = None
+    is_blocked: Optional[bool] = False
 
 #Schema do token JWT
 class Token(BaseModel):

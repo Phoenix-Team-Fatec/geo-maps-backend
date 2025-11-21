@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, status, Depends, Response, Request
 from jose import JWTError, jwt
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from schemas.user import UserCreate, UserRead, Token, Credentials
-from services.user import create_user_service, authenticate_user, UserAlreadyExistsError, AuthError
+from services.user import create_user_service, authenticate_user, get_all_users,UserAlreadyExistsError, AuthError
 from core.security import create_access_token, create_refresh_token, decode_token, refresh_session, revoke_jti, ALGORITHM, SECRET_KEY
 from repositories.user import find_user_by_email
 
@@ -113,3 +113,12 @@ async def me(token: str = Depends(get_bearer_token)):
         )
     except JWTError:
         raise HTTPException(401, "Token inválido ou expirado")
+    
+
+@auth.get("/get-users", response_model=list[UserRead])
+async def get_users():
+    try:
+        users = await get_all_users()
+        return users
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
