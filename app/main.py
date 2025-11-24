@@ -8,11 +8,13 @@ from core.database import ensure_indexes
 from routes.routes import routes_router
 from fastapi.middleware.cors import CORSMiddleware
 from routes.ocorrencia import ocorrencia_router
-
+from repositories.admin_repositorie import create_admin
+from routes.admin_route import admin_route
 
 # Função para criar índices no banco ao iniciar a aplicação
 async def lifespan(app: FastAPI):
     await ensure_indexes()
+    await create_admin()
     yield
 
 # Cria a instância do FastAPI com lifespan
@@ -35,3 +37,4 @@ app.include_router(auth_password_reset)
 app.include_router(routes_router)
 app.include_router(plus_code)
 app.include_router(weather_router)
+app.include_router(admin_route)

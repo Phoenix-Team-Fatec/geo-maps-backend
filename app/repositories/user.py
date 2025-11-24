@@ -13,3 +13,11 @@ async def create_user(user_data: UserCreate) -> UserRead:
 #Busca o usuário com base no email
 async def find_user_by_email(email: str) -> dict | None:
     return await users_collection.find_one({"email": email})
+
+
+async def get_all_users() -> list[UserRead]:
+    users_cursor = users_collection.find()
+    users = []
+    async for user in users_cursor:
+        users.append(UserRead(id=str(user["_id"]), **{k: v for k, v in user.items() if k != "hashed_password"}))
+    return users
